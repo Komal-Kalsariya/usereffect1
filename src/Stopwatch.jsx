@@ -1,47 +1,43 @@
 import React, { useEffect, useState } from 'react'
 
 const Stopwatch = () => {
-    let [time,settime]=useState(0)
-    let [isRunning,setRuning]=useState(false)
+    let [minite,setMin]=useState(0)
+    let [second,setSecond]=useState(0)
+    let [hours,setHours]=useState(0)
+    let [start,setStart]=useState(false)
 
     useEffect(()=>{
-        let timer
-        if(isRunning){
-            timer=setInterval(()=>{
-                setRuning(prevtime=>prevtime+1)
-            },1000)
+      let timer= setInterval(()=>{
+        if(start){
+            setSecond(second+1)
+            if(second==59){
+                setSecond(0)
+                setMin(minite+1)
+                
+            }
+            if(minite==59){
+                setMin(0)
+                setHours(hours+1)
+            }
         }
-        else if(!isRunning){
-            clearInterval(timer)
-        }
-        return ()=>{
-            clearInterval(timer)
-        }
-    },[isRunning])
+       },1000)
+       return ()=>{
+        clearInterval(timer)
+       }
+    },[start,second])
 
-    const handlestart =()=>setRuning(true)
-    const handlepause=()=>setRuning(false)
-    const handlereset=()=>{
-        setRuning(false)
-        settime(0)
-    }
-
-    const formatetime=(time)=>{
-        const getsecond=`${time%60}`.slice(-2)
-        const minit=`${Math.floor(time/60)}`
-        const getminit=`${minit%60}`.slice(-2)
-        const gethours=`${Math.floor(time/3600)}`.slice(-2)
-        return `${gethours} : ${getsecond} :${getminit}`
-
-    }
 
   return (
     <div>
-        <h2>StopWatch</h2>
-        <div>{formatetime(time)}</div>
-        <button onClick={handlestart}>start</button>
-        <button onClick={handlepause}>pause</button>
-        <button onClick={handlereset}>reset</button>
+        <h1>{hours}:{minite}:{second}</h1>
+        <button onClick={()=>setStart(!start)}>
+            {start==true?"stop":"start"}</button>
+        <button onClick={()=>setStart(false)}>Stop</button>
+        <button onClick={()=>{setStart(false)
+            setHours(0)
+            setMin(0)
+            setSecond(0)
+        }}>Reset</button>
     </div>
   )
 }
